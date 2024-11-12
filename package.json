@@ -1,6 +1,7 @@
 {
     "name": "gym-web-app",
     "version": "1.0.0",
+    "homepage": "https://sxmmm.github.io/gym-web-app",
     "description": "",
     "main": "index.js",
     "scripts": {
@@ -10,7 +11,6 @@
         "deploy": "gh-pages -d dist"
     },
     "keywords": [],
-    "homepage": "https://sxmmm.github.io/gym-web-app",
     "author": "",
     "license": "ISC",
     "dependencies": {
