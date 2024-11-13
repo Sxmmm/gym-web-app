@@ -6,9 +6,8 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: "bundle.js",
-        clean: true, // Clean the dist folder on each build
-        publicPath:
-            process.env.NODE_ENV === "production" ? "/repository-name/" : "/", // Add this line
+        clean: true,
+        publicPath: "/gym-web-app/",
     },
     resolve: {
         extensions: [".ts", ".tsx", ".js"],
