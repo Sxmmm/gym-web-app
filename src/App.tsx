@@ -12,11 +12,11 @@ const App: React.FC = () => {
         <Router basename="/gym-web-app">
             <Navbar />
             <Routes>
-                <Route path="/gym-web-app" element={<Home />} />
-                <Route path="/gym-web-app/exercises" element={<Exercises />} />
-                <Route path="/gym-web-app/planner" element={<Planner />} />
-                <Route path="/gym-web-app/workouts" element={<Workouts />} />
-                <Route path="/gym-web-app/about" element={<About />} />
+                <Route path="/" element={<Home />} />
+                <Route path="/exercises" element={<Exercises />} />
+                <Route path="/planner" element={<Planner />} />
+                <Route path="/workouts" element={<Workouts />} />
+                <Route path="/about" element={<About />} />
             </Routes>
         </Router>
     );
