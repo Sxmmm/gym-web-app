@@ -2,8 +2,13 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8" />
-        <meta http-equiv="refresh" content="0; URL='./index.html'" />
-        <title>Page Not Found</title>
+        <title>Redirecting...</title>
+        <script type="text/javascript">
+            var pathname = window.location.pathname;
+            window.location.replace("/gym-web-app" + pathname);
+        </script>
     </head>
-    <body></body>
+    <body>
+        Redirecting...
+    </body>
 </html>
