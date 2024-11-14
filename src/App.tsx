@@ -9,7 +9,7 @@ import Home from "./pages/Home";
 
 const App: React.FC = () => {
     return (
-        <Router>
+        <Router basename="/gym-web-app">
             <Navbar />
             <Routes>
                 <Route path="/gym-web-app" element={<Home />} />
