@@ -9,19 +9,19 @@ const Navbar: React.FC = () => {
             </div>
             <ul className="navbar-links">
                 <li>
-                    <Link to="/gym-web-app">Home</Link>
+                    <Link to="/">Home</Link>
                 </li>
                 <li>
-                    <Link to="/gym-web-app/exercises">Exercises</Link>
+                    <Link to="/exercises">Exercises</Link>
                 </li>
                 <li>
-                    <Link to="/gym-web-app/planner">Planner</Link>
+                    <Link to="/planner">Planner</Link>
                 </li>
                 <li>
-                    <Link to="/gym-web-app/workouts">Pre Made Workouts</Link>
+                    <Link to="/workouts">Pre Made Workouts</Link>
                 </li>
                 <li>
-                    <Link to="/gym-web-app/about">About</Link>
+                    <Link to="/about">About</Link>
                 </li>
             </ul>
         </nav>
