@@ -2,14 +2,27 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MuscleFilter from "../components/MuscleFilter";
 
-interface Exercise {
+interface ExerciseDetail {
     id: number;
     name: string;
     description: string;
+    language: number;
+}
+
+interface Exercise {
+    id: number;
+    uuid: string;
+    exercises: ExerciseDetail[];
+}
+
+interface Exercises {
+    id: number;
+    uuid: string;
+    name: string;
 }
 
 const Exercises: React.FC = () => {
-    const [exercises, setExercises] = useState<Exercise[]>([]);
+    const [exercises, setExercises] = useState<Exercises[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
@@ -28,7 +41,6 @@ const Exercises: React.FC = () => {
             const params: any = {
                 offset: offset,
                 limit: 20,
-                language: 2,
             };
 
             if (query) params.name = query;
@@ -36,11 +48,33 @@ const Exercises: React.FC = () => {
             if (difficulty) params.difficulty = difficulty;
 
             const response = await axios.get(
-                "https://wger.de/api/v2/exercise/",
+                "https://wger.de/api/v2/exercisebaseinfo/",
                 { params }
             );
 
-            setExercises(response.data.results);
+            console.log("API Response:", response.data);
+
+            console.log("API Response Results:", response.data.results);
+
+            console.log(
+                "API Response Results:",
+                response.data.results.flatMap(
+                    (exercise: Exercise) => exercise.exercises || []
+                )
+            );
+
+            console.log(
+                "AAAAAAAAAAA:",
+                response.data.results
+                    .flatMap((exercise: Exercise) => exercise.exercises || [])
+                    .filter((detail: ExerciseDetail) => detail.language === 2)
+            );
+
+            const filteredExercises = (response.data.results || [])
+                .flatMap((exercise: Exercise) => exercise.exercises || [])
+                .filter((detail: ExerciseDetail) => detail.language === 2);
+
+            setExercises(filteredExercises);
             setTotalPages(Math.ceil(response.data.count / 20)); // assuming response.data.count gives total items
         } catch (error) {
             console.error("Error fetching exercises:", error);
@@ -101,8 +135,8 @@ const Exercises: React.FC = () => {
                 <p>Loading...</p>
             ) : (
                 <ul>
-                    {exercises.map((exercise) => (
-                        <li key={exercise.id}>{exercise.name}</li>
+                    {exercises.map((detail) => (
+                        <li key={detail.id}>{detail.name}</li>
                     ))}
                 </ul>
             )}
