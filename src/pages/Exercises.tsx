@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import MuscleFilter from "../components/MuscleFilter";
 
 interface Exercise {
     id: number;
@@ -23,13 +24,15 @@ const Exercises: React.FC = () => {
         );
 
         try {
+            const offset = (page - 1) * 20;
             const params: any = {
-                page: page,
-                page_size: 20,
+                offset: offset,
+                limit: 20,
+                language: 2,
             };
 
             if (query) params.name = query;
-            if (muscle) params.muscle = muscle;
+            if (muscle) params.muscles = muscle;
             if (difficulty) params.difficulty = difficulty;
 
             const response = await axios.get(
@@ -72,18 +75,12 @@ const Exercises: React.FC = () => {
                     }}
                 />
 
-                <select
-                    value={muscle}
-                    onChange={(e) => {
-                        setMuscle(e.target.value);
+                <MuscleFilter
+                    onMuscleSelect={(id) => {
+                        setMuscle(id);
                         handleFilterChange();
                     }}
-                >
-                    <option value="">All Muscles</option>
-                    <option value="1">Chest</option>
-                    <option value="2">Back</option>
-                    {/* Add more muscle groups based on WGER API muscle IDs */}
-                </select>
+                />
 
                 <select
                     value={difficulty}
