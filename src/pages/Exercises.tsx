@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MuscleFilter from "../components/MuscleFilter";
+import EquipmentFilter from "../components/EquipmentFilter";
 
 interface ExerciseDetail {
     id: number;
@@ -26,14 +27,13 @@ const Exercises: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
-    const [query, setQuery] = useState<string>("");
     const [muscle, setMuscle] = useState<string>("");
-    const [difficulty, setDifficulty] = useState<string>("");
+    const [equipment, setEquipment] = useState<string>("");
 
     const fetchExercises = async () => {
         setLoading(true);
         console.log(
-            `Fetching exercises with page=${page}, query=${query}, muscle=${muscle}, difficulty=${difficulty}`
+            `Fetching exercises with page=${page}, muscle=${muscle}, equipment=${equipment}`
         );
 
         try {
@@ -43,31 +43,12 @@ const Exercises: React.FC = () => {
                 limit: 20,
             };
 
-            if (query) params.name = query;
             if (muscle) params.muscles = muscle;
-            if (difficulty) params.difficulty = difficulty;
+            if (equipment) params.equipment = equipment;
 
             const response = await axios.get(
                 "https://wger.de/api/v2/exercisebaseinfo/",
                 { params }
-            );
-
-            console.log("API Response:", response.data);
-
-            console.log("API Response Results:", response.data.results);
-
-            console.log(
-                "API Response Results:",
-                response.data.results.flatMap(
-                    (exercise: Exercise) => exercise.exercises || []
-                )
-            );
-
-            console.log(
-                "AAAAAAAAAAA:",
-                response.data.results
-                    .flatMap((exercise: Exercise) => exercise.exercises || [])
-                    .filter((detail: ExerciseDetail) => detail.language === 2)
             );
 
             const filteredExercises = (response.data.results || [])
@@ -75,7 +56,7 @@ const Exercises: React.FC = () => {
                 .filter((detail: ExerciseDetail) => detail.language === 2);
 
             setExercises(filteredExercises);
-            setTotalPages(Math.ceil(response.data.count / 20)); // assuming response.data.count gives total items
+            setTotalPages(Math.ceil(response.data.count / 20));
         } catch (error) {
             console.error("Error fetching exercises:", error);
         } finally {
@@ -86,7 +67,7 @@ const Exercises: React.FC = () => {
     // Trigger `fetchExercises` on relevant state changes
     useEffect(() => {
         fetchExercises();
-    }, [page, query, muscle, difficulty]);
+    }, [page, muscle, equipment]);
 
     // Helper to handle reset to first page when filters change
     const handleFilterChange = () => {
@@ -99,16 +80,6 @@ const Exercises: React.FC = () => {
 
             {/* Filters */}
             <div>
-                <input
-                    type="text"
-                    placeholder="Search by name..."
-                    value={query}
-                    onChange={(e) => {
-                        setQuery(e.target.value);
-                        handleFilterChange();
-                    }}
-                />
-
                 <MuscleFilter
                     onMuscleSelect={(id) => {
                         setMuscle(id);
@@ -116,18 +87,12 @@ const Exercises: React.FC = () => {
                     }}
                 />
 
-                <select
-                    value={difficulty}
-                    onChange={(e) => {
-                        setDifficulty(e.target.value);
+                <EquipmentFilter
+                    onEquipmentSelect={(id) => {
+                        setEquipment(id);
                         handleFilterChange();
                     }}
-                >
-                    <option value="">All Difficulties</option>
-                    <option value="beginner">Beginner</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="advanced">Advanced</option>
-                </select>
+                />
             </div>
 
             {/* Exercise List */}
