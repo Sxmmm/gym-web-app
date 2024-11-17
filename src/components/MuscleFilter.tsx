@@ -8,6 +8,7 @@ interface MuscleFilterProps {
 interface Muscle {
     id: number;
     name: string;
+    name_en: string;
 }
 
 const MuscleFilter: React.FC<MuscleFilterProps> = ({ onMuscleSelect }) => {
@@ -29,11 +30,15 @@ const MuscleFilter: React.FC<MuscleFilterProps> = ({ onMuscleSelect }) => {
     return (
         <select onChange={(e) => onMuscleSelect(e.target.value)}>
             <option value="">All Muscles</option>
-            {muscles.map((muscle) => (
-                <option key={muscle.id} value={muscle.id}>
-                    {muscle.name}
-                </option>
-            ))}
+            {muscles.map((muscle) => {
+                const name =
+                    muscle.name_en !== "" ? muscle.name_en : muscle.name;
+                return (
+                    <option key={muscle.id} value={muscle.id}>
+                        {name}
+                    </option>
+                );
+            })}
         </select>
     );
 };
