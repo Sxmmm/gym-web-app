@@ -2,12 +2,14 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import MuscleFilter from "../components/MuscleFilter";
 import EquipmentFilter from "../components/EquipmentFilter";
+import { Link } from "react-router-dom";
 
 interface ExerciseDetail {
     id: number;
     name: string;
     description: string;
     language: number;
+    exercise_base: number;
 }
 
 interface Exercise {
@@ -16,14 +18,8 @@ interface Exercise {
     exercises: ExerciseDetail[];
 }
 
-interface Exercises {
-    id: number;
-    uuid: string;
-    name: string;
-}
-
 const Exercises: React.FC = () => {
-    const [exercises, setExercises] = useState<Exercises[]>([]);
+    const [exercises, setExercises] = useState<ExerciseDetail[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
@@ -54,6 +50,8 @@ const Exercises: React.FC = () => {
             const filteredExercises = (response.data.results || [])
                 .flatMap((exercise: Exercise) => exercise.exercises || [])
                 .filter((detail: ExerciseDetail) => detail.language === 2);
+
+            console.log(filteredExercises);
 
             setExercises(filteredExercises);
             setTotalPages(Math.ceil(response.data.count / 20));
@@ -101,7 +99,11 @@ const Exercises: React.FC = () => {
             ) : (
                 <ul>
                     {exercises.map((detail) => (
-                        <li key={detail.id}>{detail.name}</li>
+                        <li key={detail.exercise_base}>
+                            <Link to={`/exercises/${detail.exercise_base}`}>
+                                {detail.name}
+                            </Link>
+                        </li>
                     ))}
                 </ul>
             )}
