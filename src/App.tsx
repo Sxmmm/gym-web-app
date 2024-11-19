@@ -6,7 +6,7 @@ import Planner from "./pages/Planner";
 import Workouts from "./pages/Workouts";
 import About from "./pages/About";
 import Home from "./pages/Home";
-import ExerciseDetail from "./components/ExerciseDetail";
+import ExerciseDetail from "./pages/ExerciseDetail";
 
 const App: React.FC = () => {
     return (

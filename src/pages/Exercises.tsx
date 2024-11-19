@@ -10,12 +10,22 @@ interface ExerciseDetail {
     description: string;
     language: number;
     exercise_base: number;
+    muscles: string[];
+    muscles_secondary: string[];
+}
+
+interface MuslceData {
+    id: number;
+    name: string;
+    name_en: string;
 }
 
 interface Exercise {
     id: number;
     uuid: string;
     exercises: ExerciseDetail[];
+    muscles: MuslceData[];
+    muscles_secondary: MuslceData[];
 }
 
 const Exercises: React.FC = () => {
@@ -48,10 +58,24 @@ const Exercises: React.FC = () => {
             );
 
             const filteredExercises = (response.data.results || [])
-                .flatMap((exercise: Exercise) => exercise.exercises || [])
-                .filter((detail: ExerciseDetail) => detail.language === 2);
+                .flatMap((exercise: Exercise) =>
+                    (exercise.exercises || []).map((detail: ExerciseDetail) => {
+                        const muscleNames = (exercise.muscles || []).map(
+                            (muscle) => muscle.name_en || muscle.name
+                        );
 
-            console.log(filteredExercises);
+                        const secondaryMuscleNames = (
+                            exercise.muscles_secondary || []
+                        ).map((muscle) => muscle.name_en || muscle.name);
+
+                        return {
+                            ...detail,
+                            muscles: muscleNames,
+                            muscles_secondary: secondaryMuscleNames,
+                        };
+                    })
+                )
+                .filter((detail: ExerciseDetail) => detail.language === 2);
 
             setExercises(filteredExercises);
             setTotalPages(Math.ceil(response.data.count / 20));
