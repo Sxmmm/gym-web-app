@@ -3,8 +3,9 @@ import axios from "axios";
 import MuscleFilter from "../components/MuscleFilter";
 import EquipmentFilter from "../components/EquipmentFilter";
 import { Link } from "react-router-dom";
+import ExerciseListItem from "../components/ExerciseListItem";
 
-interface ExerciseDetail {
+export interface ExerciseListDetail {
     id: number;
     name: string;
     description: string;
@@ -23,13 +24,13 @@ interface MuslceData {
 interface Exercise {
     id: number;
     uuid: string;
-    exercises: ExerciseDetail[];
+    exercises: ExerciseListDetail[];
     muscles: MuslceData[];
     muscles_secondary: MuslceData[];
 }
 
 const Exercises: React.FC = () => {
-    const [exercises, setExercises] = useState<ExerciseDetail[]>([]);
+    const [exercises, setExercises] = useState<ExerciseListDetail[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [page, setPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
@@ -59,23 +60,25 @@ const Exercises: React.FC = () => {
 
             const filteredExercises = (response.data.results || [])
                 .flatMap((exercise: Exercise) =>
-                    (exercise.exercises || []).map((detail: ExerciseDetail) => {
-                        const muscleNames = (exercise.muscles || []).map(
-                            (muscle) => muscle.name_en || muscle.name
-                        );
+                    (exercise.exercises || []).map(
+                        (detail: ExerciseListDetail) => {
+                            const muscleNames = (exercise.muscles || []).map(
+                                (muscle) => muscle.name_en || muscle.name
+                            );
 
-                        const secondaryMuscleNames = (
-                            exercise.muscles_secondary || []
-                        ).map((muscle) => muscle.name_en || muscle.name);
+                            const secondaryMuscleNames = (
+                                exercise.muscles_secondary || []
+                            ).map((muscle) => muscle.name_en || muscle.name);
 
-                        return {
-                            ...detail,
-                            muscles: muscleNames,
-                            muscles_secondary: secondaryMuscleNames,
-                        };
-                    })
+                            return {
+                                ...detail,
+                                muscles: muscleNames,
+                                muscles_secondary: secondaryMuscleNames,
+                            };
+                        }
+                    )
                 )
-                .filter((detail: ExerciseDetail) => detail.language === 2);
+                .filter((detail: ExerciseListDetail) => detail.language === 2);
 
             setExercises(filteredExercises);
             setTotalPages(Math.ceil(response.data.count / 20));
@@ -121,13 +124,12 @@ const Exercises: React.FC = () => {
             {loading ? (
                 <p>Loading...</p>
             ) : (
-                <ul>
+                <ul className="exercise-list">
                     {exercises.map((detail) => (
-                        <li key={detail.exercise_base}>
-                            <Link to={`/exercises/${detail.exercise_base}`}>
-                                {detail.name}
-                            </Link>
-                        </li>
+                        <ExerciseListItem
+                            key={detail.exercise_base}
+                            detail={detail}
+                        />
                     ))}
                 </ul>
             )}
