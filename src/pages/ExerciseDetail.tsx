@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { fetchExerciseDetail, ExerciseDetail } from "../utils/dataParser";
 import axios from "axios";
-
-interface ExerciseDetail {
-    id: number;
-    name: string;
-    language?: number;
-    description: string;
-    equipment: { id: number; name: string }[];
-    muscles: { id: number; name: string; name_en: string }[];
-    muscles_secondary: { id: number; name: string; name_en: string }[];
-    image_url: string;
-}
 
 const ExerciseDetail: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -19,43 +9,28 @@ const ExerciseDetail: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
-        const fetchExerciseDetail = async () => {
+        const fetchExerciseDetails = async () => {
             setLoading(true);
 
-            try {
-                const response = await axios.get(
-                    `https://wger.de/api/v2/exercisebaseinfo/${id}/`
-                );
-
-                const exercise: ExerciseDetail[] =
-                    response.data.exercises.filter(
-                        (detail: ExerciseDetail) => detail.language === 2
+            if (id) {
+                const pasrsedID = parseInt(id, 10);
+                if (!isNaN(pasrsedID)) {
+                    const fetchedExercise = await fetchExerciseDetail(
+                        pasrsedID
                     );
+                    if (fetchedExercise) {
+                        setExercise(fetchedExercise);
+                    } else {
+                        alert("Exercise not found or invalid ID.");
+                    }
 
-                console.log(exercise);
-
-                // Transform the response data as needed
-                const exerciseData = response.data;
-                const exerciseDetail: ExerciseDetail = {
-                    id: exerciseData.id,
-                    name: exercise[0]?.name || "Unknown",
-                    description:
-                        exercise[0]?.description || "No description available.",
-                    equipment: exerciseData.equipment || [],
-                    muscles: exerciseData.muscles || [],
-                    muscles_secondary: exerciseData.muscles_secondary || [],
-                    image_url: exerciseData.images[0]?.image || [],
-                };
-
-                setExercise(exerciseDetail);
-            } catch (error) {
-                console.error("Error fetching exercise detail:", error);
-            } finally {
-                setLoading(false);
+                    setExercise(fetchedExercise);
+                    setLoading(false);
+                }
             }
         };
 
-        fetchExerciseDetail();
+        fetchExerciseDetails();
     }, [id]);
 
     if (loading) {
