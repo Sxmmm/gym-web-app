@@ -100,7 +100,7 @@ const Exercises: React.FC = () => {
     };
 
     return (
-        <div>
+        <div className="exercise-page">
             <h1>Exercises</h1>
 
             {/* Filters */}
