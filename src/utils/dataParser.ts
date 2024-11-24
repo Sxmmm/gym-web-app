@@ -11,6 +11,20 @@ export interface ExerciseDetail {
     image_url: string;
 }
 
+const decodeHtmlEntities = (text: string): string => {
+    const textarea = document.createElement("textarea");
+    textarea.innerHTML = text;
+    return textarea.value;
+};
+
+const stripHtmlTags = (html: string): string => {
+    html = html.replace(/<\/?(p|div|br|ul|ol|li)>/gi, "\n");
+
+    const plainText = html.replace(/<\/?[^>]+(>|$)/g, "");
+
+    return decodeHtmlEntities(plainText).trim();
+};
+
 export const fetchExerciseDetail = async (
     id: number
 ): Promise<ExerciseDetail | null> => {
@@ -32,7 +46,9 @@ export const fetchExerciseDetail = async (
         const exerciseDetail: ExerciseDetail = {
             id: exerciseData.id,
             name: exercise.name || "Unknown",
-            description: exercise.description || "No description available.",
+            description: stripHtmlTags(
+                exercise.description || "No description available."
+            ),
             equipment: exerciseData.equipment || [],
             muscles: exerciseData.muscles || [],
             muscles_secondary: exerciseData.muscles_secondary || [],
